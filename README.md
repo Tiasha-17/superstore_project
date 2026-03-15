@@ -1,98 +1,200 @@
 # Superstore Sales and Profitability Analysis
 
-## Project Overview
-This project analyzes the `Sample - Superstore` dataset to identify where revenue is growing, where profit is leaking, and what business actions can improve margin.
+This is my first end-to-end data science portfolio project.  
+I used the Superstore dataset to move beyond basic EDA and answer business questions on sales, profit, discounts, and customer concentration.
 
-As a first data science portfolio project, the focus is on translating analysis into clear, decision-ready insights for business stakeholders.
+## Project Objective
+The main goal of this project is to identify where the business is growing, where profit is leaking, and what practical actions can improve margins.
 
-## Business Problem
-Even when sales grow, companies can still lose profit due to discounting, product mix, and geographic performance differences.
+## Business Questions
+1. Sales Performance
+- Which region generates the highest sales revenue?
+- Which product categories contribute the most to total sales?
+- How does sales distribution vary across regions and categories?
 
-This analysis answers:
-- Which segments drive profit vs. just revenue?
-- How do discounts affect profitability?
-- Where are the biggest loss pockets (category, state, city)?
-- How concentrated is profit across customers and orders?
+2. Profitability Analysis
+- Which product categories generate the highest profit?
+- Are there categories with high sales but low profit?
+- Which regions are most profitable for the business?
+
+3. Discount Impact
+- What is the relationship between discount levels and profit?
+- At what discount levels does profit start to decline?
+- Are certain product categories more sensitive to discounts?
+
+4. Customer Insights
+- Who are the top customers by total sales?
+- Do a small number of customers account for a large share of revenue?
 
 ## Dataset
-- Source file: `Sample - Superstore.csv`
-- Rows: `9,994`
-- Columns: `21`
-- Time period: `2014-2017`
+- File: `Sample - Superstore.csv`
+- Total rows: `9,994`
+- Total columns: `21`
+- Date range: `2014-2017`
 - Unique orders: `5,009`
 - Unique customers: `793`
+- Encoding used to load file: `latin1`
 
-## Tools and Skills Used
+## Tech Stack
 - Python
+- Jupyter Notebook
 - Pandas
-- Exploratory Data Analysis (EDA)
-- Business KPI analysis
-- Grouped aggregation and profitability segmentation
+- NumPy
+- Matplotlib
+- Seaborn
+- scikit-learn
 
-## Methodology
-1. Loaded and validated data (used `latin1` encoding due to UTF-8 decode error).
-2. Parsed date fields and created shipping lead time (`Ship Days`).
-3. Computed core KPIs: total sales, total profit, margin.
-4. Performed segment-level analysis by:
-   - Category and sub-category
-   - Region, state, and city
-   - Customer segment and customer profitability
-5. Analyzed discount impact using discount bands and threshold checks.
-6. Measured concentration with:
-   - Loss-making order share
-   - 80/20-style customer contribution analysis
+## Repository Structure
+```text
+superstore_project/
+|- Sample - Superstore.csv
+|- analysis.ipynb
+|- README.md
+|- PRESENTATION_SCRIPT.md
+|- .gitignore
+```
 
-## Key KPIs
+## Analysis Workflow
+1. Data loading and validation.
+2. Date conversion and feature engineering (`Ship Days`, yearly and period features).
+3. KPI baseline calculation (sales, profit, margin, growth).
+4. Segmentation analysis by region, category, sub-category, state, city, and customer segment.
+5. Discount band analysis and threshold checks.
+6. Root-cause analysis for loss pockets (`State x Sub-Category`).
+7. Customer concentration and order-level profitability analysis.
+8. Advanced extensions:
+- Monthly and quarterly seasonality analysis.
+- Discount-cap simulation (20% and 30% caps).
+- Order-level profit/loss classification model.
+
+## Core KPIs
 - Total Sales: `$2,297,200.86`
 - Total Profit: `$286,397.02`
 - Overall Profit Margin: `12.47%`
 - Sales Growth (2014 to 2017): `+51.41%`
 - Profit Growth (2014 to 2017): `+88.60%`
 
-## Top 5 Business Insights
-1. **Sales grew strongly, but margin softened in the latest year.**  
-   Sales increased from `$484K` (2014) to `$733K` (2017), while margin peaked in 2016 (`13.43%`) and dipped to `12.74%` in 2017, signaling pressure on profitability.
+### Yearly Trend
+| Year | Sales | Profit | Margin |
+|---|---:|---:|---:|
+| 2014 | $484,247.50 | $49,543.97 | 10.23% |
+| 2015 | $470,532.51 | $61,618.60 | 13.10% |
+| 2016 | $609,205.60 | $81,795.17 | 13.43% |
+| 2017 | $733,215.26 | $93,439.27 | 12.74% |
 
-2. **High discounting is the largest profit leakage driver.**  
-   Orders with discount `>= 30%` account for only `15.79%` of sales but contribute `-$135,376.06` profit (`-37.32%` margin for that slice).
+## Answers to Business Questions
 
-3. **Furniture generates revenue but underperforms on profit.**  
-   Furniture contributes ~`32%` of sales but only `$18,451` profit (`2.49%` margin), far below Technology (`17.40%`) and Office Supplies (`17.04%`).
+### 1) Sales Performance
+- Highest sales region: `West` with `$725,457.82` (`31.6%` of total sales).
+- Sales by category:
+- `Technology`: `$836,154.03` (`36.4%`)
+- `Furniture`: `$741,999.80` (`32.3%`)
+- `Office Supplies`: `$719,047.03` (`31.3%`)
+- Regional distribution is fairly balanced, with West and East leading.
 
-4. **Losses are concentrated in specific geographies.**  
-   Largest state-level losses come from Texas (`-$25,729`), Ohio (`-$16,971`), and Pennsylvania (`-$15,560`), while California and New York are major profit engines.
+### 2) Profitability Analysis
+- Most profitable category: `Technology` (`$145,454.95`).
+- Next: `Office Supplies` (`$122,490.80`).
+- High-sales but low-profit category: `Furniture`.
+- Furniture profit margin is only `2.49%`, much lower than:
+- Technology margin: `17.40%`
+- Office Supplies margin: `17.04%`
+- Most profitable region: `West` (`$108,418.45`), then `East` (`$91,522.78`).
 
-5. **Profit is concentrated in a minority of customers, and many orders are unprofitable.**  
-   About `20.4%` of orders are loss-making. Just `153` customers (out of `793`) generate `80%` of total profit, suggesting clear potential for account-level strategy.
+### 3) Discount Impact
+- Discount and profit are negatively correlated: `-0.219`.
+- Profit margin turns negative starting from the `30-40%` discount band.
+- Discount sensitivity by category (correlation of discount vs profit):
+- `Furniture`: `-0.484` (most sensitive)
+- `Technology`: `-0.269`
+- `Office Supplies`: `-0.209`
+- High-discount transactions (`>= 30%`) are only `15.79%` of sales but contribute `-$135,376.06` profit.
+
+### 4) Customer Insights
+- Top 10 customers by sales include:
+- Sean Miller (`$25,043.05`)
+- Tamara Chand (`$19,052.22`)
+- Raymond Buch (`$15,117.34`)
+- Customer concentration by revenue:
+- 43 customers drive 20% of sales.
+- 170 customers drive 50% of sales.
+- 396 customers drive 80% of sales.
+- Interpretation: revenue is not extremely concentrated in a very small set of customers.
+
+## Advanced Analysis
+
+### Seasonality Analysis
+- Highest sales month: `Nov 2017` with `$118,447.82`.
+- Highest profit month: `Dec 2016` with `$17,885.31`.
+- Highest sales quarter: `2017 Q4` with `$280,054.07`.
+- Highest profit quarter: `2016 Q4` with `$38,139.86`.
+- Lowest monthly margin in the period: `Jan 2015` (`-18.05%`).
+
+### Discount Cap Simulation
+I simulated discount caps using the notebook assumption:
+`Profit_Sim = Profit + (Discount - Discount_Capped) * Sales`
+
+- If capped at `30%`:
+- Simulated profit: `$337,658.52`
+- Uplift: `+$51,261.50` (`+17.90%`)
+
+- If capped at `20%`:
+- Simulated profit: `$373,935.54`
+- Uplift: `+$87,538.52` (`+30.57%`)
+
+### Root-Cause Matrix (Loss Pockets)
+Top loss pockets from `State x Sub-Category` include:
+- Texas x Binders: `-$14,705.07`
+- Ohio x Machines: `-$11,770.94`
+- Illinois x Binders: `-$7,204.32`
+- Texas x Appliances: `-$6,147.22`
+
+### Predictive Modeling (Order-Level Profit/Loss)
+I built a Random Forest classifier on order-level features to predict whether an order is profitable.
+
+- Model: `RandomForestClassifier(n_estimators=100, random_state=42)`
+- Test accuracy: `0.90`
+- Confusion matrix:
+- True negatives: `150`
+- False positives: `55`
+- False negatives: `45`
+- True positives: `752`
+- Most important feature: `Discount` (`0.584` importance)
+
+## Key Findings Summary
+- Sales grew strongly, but margin softened in the latest year.
+- High discounts are the largest source of profit leakage.
+- Furniture drives revenue but underperforms on profit.
+- Losses are concentrated in specific states and sub-categories.
+- Around `20.4%` of orders are loss-making.
+- `153` customers (19.3% of customers) generate `80%` of total profit.
 
 ## Business Recommendations
-- Set discount guardrails by category and geography, especially for high-discount transactions.
-- Reprice or rebundle low-margin Furniture sub-categories (especially Tables and Bookcases).
-- Build a state-level turnaround plan for major loss regions before scaling promotions.
-- Introduce customer-tier pricing and retention strategy to protect high-profit accounts.
-- Track order-level margin in operations dashboards to reduce loss-making transactions.
+- Set category- and region-level discount guardrails.
+- Reprice, bundle, or limit low-margin Furniture sub-categories.
+- Create focused turnaround plans for top loss pockets.
+- Monitor order-level margin in operational dashboards.
+- Use customer-tier strategy for retention and pricing decisions.
 
-## Suggested Visuals for Portfolio
-- Sales and profit trend by year
-- Profit margin by category and sub-category
-- Discount band vs. profit/margin chart
-- State-level profit map or bar chart
-- Cumulative customer profit (Pareto curve)
-
-## Project Structure
-```text
-superstore_project/
-|- Sample - Superstore.csv
-|- analysis.ipynb
-|- README.md
+## How to Run
+1. Clone the repository.
+2. Install dependencies:
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn jupyter
 ```
+3. Open the notebook:
+```bash
+jupyter notebook analysis.ipynb
+```
+4. Run all cells from top to bottom.
 
-## Reproducibility
-1. Open `analysis.ipynb`.
-2. Ensure Python and pandas are installed.
-3. Run notebook cells from top to bottom.
-4. Verify that key metrics match the values in this README.
+## What I Learned
+- Business impact comes from combining EDA with clear recommendations.
+- Discount policy can change profitability more than raw sales growth.
+- Segment-level analysis is necessary because aggregate KPIs can hide loss pockets.
+- Adding simulation and predictive modeling makes analysis more decision-ready.
 
-## Interview Pitch (Short)
-I analyzed 9,994 retail transactions to find why profit was lagging behind sales growth.  
-The biggest issue was discount strategy: high-discount orders were a relatively small share of sales but created large losses. I also found product and state-level loss pockets and showed how targeted pricing and geography-specific actions can improve margin without depending only on revenue growth.
+## Next Improvements
+- Add a dashboard version (Power BI or Tableau).
+- Validate discount simulation with a stronger causal framework.
+- Try gradient boosting and calibration for more robust order-level prediction.

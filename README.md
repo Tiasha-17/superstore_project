@@ -1,6 +1,5 @@
 # Superstore Sales and Profitability Analysis
 
-This is my first end-to-end data science portfolio project.  
 I used the Superstore dataset to move beyond basic EDA and answer business questions on sales, profit, discounts, and customer concentration.
 
 ## Project Objective
